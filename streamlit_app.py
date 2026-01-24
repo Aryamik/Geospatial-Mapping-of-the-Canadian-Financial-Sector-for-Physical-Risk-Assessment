@@ -144,9 +144,7 @@ legend_url = embedded_legend(layer_name) or fallback_legend(layer_name)
 # Importing the geocoded addresses for branches of all Canadian financial institutions.
 # YOu can obviously change this dataset/code below to fit your purpose. Just make sure the fields are consistent. 
 
-banks_df = pd.read_csv(
-    r"C:\Users\aryam\OneDrive\Documents\Python Projects\Banks Geocoded with ArcGIS (USE this).csv"
-)
+banks_df = pd.read_csv("data/Canadian Banks Geocoded.csv")
 
 bank_filter = st.selectbox(
     "Filter by Bank Name",
@@ -212,4 +210,5 @@ if legend_url:
     )
 
 st_folium(m, width=1400, height=900, returned_objects=[])
+
 
