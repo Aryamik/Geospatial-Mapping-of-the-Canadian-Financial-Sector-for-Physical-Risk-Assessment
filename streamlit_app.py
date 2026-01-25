@@ -17,7 +17,7 @@ st.title("Geospatial Mapping of the Canadian Financial Sector for Physical Risk 
 st.markdown(
     """
     This dashboard combines [NASA’s Global Imagery Browse Services (GIBS)](https://nasa-gibs.github.io/gibs-api-docs/) with
-    geocoded locations of [Canadian Banks](https://github.com/Aryamik/Geocoded-Addresses-of-Canadian-Financial-Institutions) enabling a real time assessment of physical risks of climate change. 
+    geocoded locations of [Canadian Banks](https://github.com/Aryamik/Geocoded-Addresses-of-Canadian-Financial-Institutions) that has been sourced from Payments Canada; enabling a real time assessment of physical risks of climate change. This application uses imagery provided by services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS).
 
     """
 )
