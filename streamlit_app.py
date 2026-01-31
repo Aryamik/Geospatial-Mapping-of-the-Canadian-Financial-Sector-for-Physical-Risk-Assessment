@@ -146,69 +146,73 @@ legend_url = embedded_legend(layer_name) or fallback_legend(layer_name)
 
 banks_df = pd.read_csv("data/Canadian Banks Geocoded.csv")
 
-bank_filter = st.selectbox(
-    "Filter by Bank Name",
-    ["All"] + sorted(banks_df["bank_name"].unique())
-)
-
-if bank_filter != "All":
-    banks_df = banks_df[banks_df["bank_name"] == bank_filter]
-
-# -----------------------------
-# Map
-# -----------------------------
-m = folium.Map(location=[20, 0], zoom_start=2, tiles="OpenStreetMap")
-
-folium.WmsTileLayer(
-    url=WMS_BASE_URL,
-    name=layer_title,
-    layers=layer_name,
-    fmt="image/png",
-    transparent=True,
-    overlay=True,
-    control=True,
-).add_to(m)
-
-#You can modify this code or the dataset according to the fields that you have
-for _, row in banks_df.iterrows():
-    folium.Marker(
-        location=[row["Lat"], row["Long"]], 
-        popup=(
-            f"<b>{row['bank_name']}</b><br>"
-            f"{row['Address']}<br>"
-            f"Provider: {row['Provider']}<br>"
-            f"Institution: {row['institution']}<br>"
-            f"Transit: {row['transit']}<br>"
-            f"Routing: {row['routing']}"
-        ),
-        icon=folium.Icon(color="blue", icon="bank", prefix="fa"),
-    ).add_to(m)
-
-folium.LayerControl(collapsed=False).add_to(m)
-
-if legend_url:
-    m.get_root().html.add_child(
-        folium.Element(
-            f"""
-            <div style="
-                position: fixed;
-                bottom: 20px;
-                left: 20px;
-                z-index: 9999;
-                background: white;
-                padding: 10px;
-                border: 2px solid #777;
-                border-radius: 6px;
-                box-shadow: 2px 2px 6px rgba(0,0,0,.3);
-                max-width: 260px;
-            ">
-                <b>{layer_title}</b><br>
-                <img src="{legend_url}" style="width:240px;">
-            </div>
-            """
-        )
+with st.form("map_controls"):
+    bank_filter = st.selectbox(
+        "Filter by Bank Name",
+        ["All"] + sorted(banks_df["bank_name"].unique())
     )
 
-st_folium(m, width=1400, height=900, returned_objects=[])
+    submitted = st.form_submit_button("Submit")
 
+if submitted:
+    if bank_filter != "All":
+        banks_df = banks_df[banks_df["bank_name"] == bank_filter]
 
+    # -----------------------------
+    # Map
+    # -----------------------------
+    m = folium.Map(location=[20, 0], zoom_start=2, tiles="OpenStreetMap")
+
+    folium.WmsTileLayer(
+        url=WMS_BASE_URL,
+        name=layer_title,
+        layers=layer_name,
+        fmt="image/png",
+        transparent=True,
+        overlay=True,
+        control=True,
+    ).add_to(m)
+
+    #You can modify this code or the dataset according to the fields that you have
+    for _, row in banks_df.iterrows():
+        folium.Marker(
+            location=[row["Lat"], row["Long"]], 
+            popup=(
+                f"<b>{row['bank_name']}</b><br>"
+                f"{row['Address']}<br>"
+                f"Provider: {row['Provider']}<br>"
+                f"Institution: {row['institution']}<br>"
+                f"Transit: {row['transit']}<br>"
+                f"Routing: {row['routing']}"
+            ),
+            icon=folium.Icon(color="blue", icon="bank", prefix="fa"),
+        ).add_to(m)
+
+    folium.LayerControl(collapsed=False).add_to(m)
+
+    if legend_url:
+        m.get_root().html.add_child(
+            folium.Element(
+                f"""
+                <div style="
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    z-index: 9999;
+                    background: white;
+                    padding: 10px;
+                    border: 2px solid #777;
+                    border-radius: 6px;
+                    box-shadow: 2px 2px 6px rgba(0,0,0,.3);
+                    max-width: 260px;
+                ">
+                    <b>{layer_title}</b><br>
+                    <img src="{legend_url}" style="width:240px;">
+                </div>
+                """
+            )
+        )
+
+    st_folium(m, width=1400, height=900, returned_objects=[])
+else:
+    st.info("Select your filters and click **Submit** to display results.")
